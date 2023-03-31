@@ -1,0 +1,3 @@
+<graph_name>_<partition_code>_<pc(0/1)per(0/1)es(0/1)en(0/1)cs(0/1)>_<version>
+
+eg: reddit_0_01000_0
