@@ -38,6 +38,6 @@ echo -e "=======================================================================
 python3 partition_code/print_all_entropies.py \
                       --dataset "OGB-Papers" \
                       --json_metis partitions/ogbn-papers/ogbn-papers_metis/ogbn-papers100M.json \
-                      --json_eb partitions/ogbn-papers/ogbn-papers_metis/ogbn-papers100M.json \
+                      --json_eb partitions/ogbn-papers/ogbn-papers_eb/ogbn-papers100M.json \
                       --log partitions/partition_log_ogbn-papers.txt \
                       --no_of_part 16

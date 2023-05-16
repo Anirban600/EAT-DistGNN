@@ -18,13 +18,13 @@ with open(args.log, 'r') as f: data = f.read()
 metis = re.findall(r"Metis partitioning: \d*\.\d* seconds", data)
 ew_eb = re.findall(r"Total Time :\s*\d*\.\d*", data)
 
-if len(metis) < 2 or len(ew_eb) < 2:
+if args.json_ew and (len(metis) < 2 or len(ew_eb) < 2):
         print("Incomplete run of partition generation codes or log file error.")
         exit()
 
 time_metis = float(metis[0].split()[2])
-time_ew = float(ew_eb[0].split()[3])
-time_eb = float(ew_eb[1].split()[3]) + float(metis[1].split()[2])
+if args.json_ew: time_ew = float(ew_eb[0].split()[3])
+time_eb = float(ew_eb[1 if args.json_ew else 0].split()[3]) + float(metis[1].split()[2])
 
 
 print(f"+{'-'*9}+{'-'*23}+")
