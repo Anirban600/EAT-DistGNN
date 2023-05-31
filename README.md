@@ -3,8 +3,9 @@
 ## Table of Contents
 - [Overview](#overview)
 - [Dataset Used](#dataset-used)
-- [Setup Environment](#setup-emvironment)
+- [Setup Environment](#setup-environment)
 - [Make Partitions](#make-partitions)
+- [Training](#training)
 
 ## Overview
 <p style="text-align: justify;">
@@ -149,4 +150,27 @@ After running all scripts, the directory structure of `/partitions` will look li
 ## Training
 
 There is one script file for every dataset which runs the required partitioning and training on that dataset and produces the results in the same format as quoted in the paper. The script files by the name:
-`train_<dataset_name>.sh` and can be run by giving the command `./train_<dataset_name>.sh`
+`train_<dataset_name>.sh` and can be run by giving the command `./train_<dataset_name>.sh`. **Please run this command when current working directory is EAT-DistGNN**
+
+The script first creates the necessary partitions and then runs training on them with the best hyperparameters we obtained. Finally it makes the tables and graphs as presented in the paper. 
+
+The following files containing the results will be generated apart from the partitioning logs. These can be found in the experiments folder after the experiments have completed running:
+1. `<graph_name>_results_table.csv`!
+
+[image](https://github.com/Anirban600/EAT-DistGNN/assets/55611035/0f1d1bce-1390-4156-84e1-982e9232218f)
+
+The first 3 rows are the results for one graph as reported in Table 2: Comparing performance metrics of various algorithms for different graph datasets. Scores are reported as percentages and the last row gives results for that graph as reported in Table 6: Wall clock times (in sec) across all the 4 partitions of each partitioning scheme for various graph datasets.
+
+2. `metrics_compared_<graph_name>.jpg
+
+![image](https://github.com/Anirban600/EAT-DistGNN/assets/55611035/1cd00b82-04c0-4fb5-b131-5e32f46bf917)
+
+This is one column of graph as presented in Figure 6: The convergence curves for training loss, validation micro and macro-F1 scores for Flickr, Reddit, Yelp and OGBNProducts using varoius partitioning schemes.
+
+3. `speed_plot_<graph_name>.jpg`
+
+![image](https://github.com/Anirban600/EAT-DistGNN/assets/55611035/25d3f8da-6c9e-4f9b-b3ad-5655f7610e11)
+
+This presents the speed plot for the particular graph dataset as presented in Figure 5: Average training speeds across all partitions of default partitioning scheme for various graph datasets.
+
+
