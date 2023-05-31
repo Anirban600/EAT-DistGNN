@@ -104,9 +104,9 @@ partition_log_<dataset>.txt
 After running the partition script, it saves the partitioned graph into a folder named like `<dataset>_<algorithm>` in the path `/partitions/<dataset>/`. So the `/partitions/<dataset>` folder liiks like,
 
       <dataset>/
-      ├── <dataset>_metis/
-      ├── <dataset>_edge_weighted/
-      └── <dataset>_entropy_balanced/
+      ├── metis/
+      ├── edge-weighted/
+      └── entropy-balanced/
 
 ### Directory Structure of `/partitions` folder
 
@@ -114,19 +114,19 @@ After running all scripts, the directory structure of `/partitions` will look li
 
       partitions/
       ├── flickr/
-      |   ├── flickr_metis
+      |   ├── metis
       |   |   ├── flickr.json
       |   |   ├── part0/
       |   |   ├── part1/
       |   |   ├── part2/
       |   |   └── part3/
-      |   ├── flickr_edge_weighted
+      |   ├── edge-weighted
       |   |   ├── flickr.json
       |   |   ├── part0/
       |   |   ├── part1/
       |   |   ├── part2/
       |   |   └── part3/
-      |   └── flickr_entropy_balanced
+      |   └── entropy-balanced
       |       ├── flickr.json
       |       ├── part0/
       |       ├── part1/
@@ -145,3 +145,8 @@ After running all scripts, the directory structure of `/partitions` will look li
       ├── partition_log_yelp.txt
       ├── partition_log_ogbn-papers.txt
       └── partition_log_ogbn-products.txt
+
+## Training
+
+There is one script file for every dataset which runs the required partitioning and training on that dataset and produces the results in the same format as quoted in the paper. The script files by the name:
+`train_<dataset_name>.sh` and can be run by giving the command `./train_<dataset_name>.sh`

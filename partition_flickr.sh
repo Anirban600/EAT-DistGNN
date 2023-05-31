@@ -14,7 +14,7 @@ python3 partition_code/partition_default.py \
                       --num_parts 4 \
                       --balance_train \
                       --balance_edges \
-                      --output partitions/flickr/flickr_metis
+                      --output partitions/flickr/metis
 
 
 echo -e "\n\n============================================================================================================================================"
@@ -27,7 +27,7 @@ python3 partition_code/partition_edge_weighted.py \
                       --balance_train \
                       --balance_edges \
                       --c 10 \
-                      --output partitions/flickr/flickr_edge_weighted
+                      --output partitions/flickr/edge-weighted
 
 
 echo -e "\n\n============================================================================================================================================"
@@ -41,7 +41,7 @@ python3 partition_code/partition_entropy_balance.py \
                       --balance_edges \
                       --grp_parts 4 \
                       --num_run 15 \
-                      --output partitions/flickr/flickr_entropy_balanced
+                      --output partitions/flickr/entropy-balanced
 
 
 echo -e "\n\n============================================================================================================================================"
@@ -50,8 +50,8 @@ echo -e "=======================================================================
 
 python3 partition_code/print_all_entropies.py \
                       --dataset Flickr \
-                      --json_metis partitions/flickr/flickr_metis/flickr.json \
-                      --json_ew partitions/flickr/flickr_edge_weighted/flickr.json \
-                      --json_eb partitions/flickr/flickr_entropy_balanced/flickr.json \
+                      --json_metis partitions/flickr/metis/flickr.json \
+                      --json_ew partitions/flickr/edge-weighted/flickr.json \
+                      --json_eb partitions/flickr/entropy-balanced/flickr.json \
                       --log partitions/partition_log_flickr.txt \
                       --no_of_part 4

@@ -15,7 +15,7 @@ python3 partition_code/partition_default.py \
                       --num_parts 4 \
                       --balance_train \
                       --balance_edges \
-                      --output partitions/ogbn-products/ogbn-products_metis
+                      --output partitions/ogbn-products/metis
 
 
 echo -e "\n\n============================================================================================================================================"
@@ -28,7 +28,7 @@ python3 partition_code/partition_edge_weighted.py \
                       --balance_train \
                       --balance_edges \
                       --c 0.5 \
-                      --output partitions/ogbn-products/ogbn-products_edge_weighted
+                      --output partitions/ogbn-products/edge-weighted
 
 
 echo -e "\n\n============================================================================================================================================"
@@ -42,7 +42,7 @@ python3 partition_code/partition_entropy_balance.py \
                       --balance_edges \
                       --grp_parts 4 \
                       --num_run 15 \
-                      --output partitions/ogbn-products/ogbn-products_entropy_balanced
+                      --output partitions/ogbn-products/entropy-balanced
 
 
 echo -e "\n\n============================================================================================================================================"
@@ -51,8 +51,8 @@ echo -e "=======================================================================
 
 python3 partition_code/print_all_entropies.py \
                       --dataset "OGB-Products" \
-                      --json_metis partitions/ogbn-products/ogbn-products_metis/ogbn-products.json \
-                      --json_ew partitions/ogbn-products/ogbn-products_edge_weighted/ogbn-products.json \
-                      --json_eb partitions/ogbn-products/ogbn-products_entropy_balanced/ogbn-products.json \
+                      --json_metis partitions/ogbn-products/metis/ogbn-products.json \
+                      --json_ew partitions/ogbn-products/edge-weighted/ogbn-products.json \
+                      --json_eb partitions/ogbn-products/entropy-balanced/ogbn-products.json \
                       --log partitions/partition_log_ogbn-products.txt \
                       --no_of_part 4

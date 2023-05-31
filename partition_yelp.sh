@@ -14,7 +14,7 @@ python3 partition_code/partition_default.py \
                       --num_parts 4 \
                       --balance_train \
                       --balance_edges \
-                      --output partitions/yelp/yelp_metis
+                      --output partitions/yelp/metis
 
 
 echo -e "\n\n============================================================================================================================================"
@@ -27,7 +27,7 @@ python3 partition_code/partition_edge_weighted.py \
                       --balance_train \
                       --balance_edges \
                       --c 0.1 \
-                      --output partitions/yelp/yelp_edge_weighted
+                      --output partitions/yelp/edge-weighted
 
 
 echo -e "\n\n============================================================================================================================================"
@@ -41,7 +41,7 @@ python3 partition_code/partition_entropy_balance_yelp.py \
                       --balance_edges \
                       --grp_parts 4 \
                       --num_run 15 \
-                      --output partitions/yelp/yelp_entropy_balanced
+                      --output partitions/yelp/entropy-balanced
 
 
 echo -e "\n\n============================================================================================================================================"
@@ -50,8 +50,8 @@ echo -e "=======================================================================
 
 python3 partition_code/print_all_yelp_entropies.py \
                       --dataset Yelp \
-                      --json_metis partitions/yelp/yelp_metis/yelp.json \
-                      --json_ew partitions/yelp/yelp_edge_weighted/yelp.json \
-                      --json_eb partitions/yelp/yelp_entropy_balanced/yelp.json \
+                      --json_metis partitions/yelp/metis/yelp.json \
+                      --json_ew partitions/yelp/edge-weighted/yelp.json \
+                      --json_eb partitions/yelp/entropy-balanced/yelp.json \
                       --log partitions/partition_log_yelp.txt \
                       --no_of_part 4
