@@ -155,9 +155,9 @@ There is one script file for every dataset which runs the required partitioning 
 The script first creates the necessary partitions and then runs training on them with the best hyperparameters we obtained. Finally it makes the tables and graphs as presented in the paper. 
 
 The following files containing the results will be generated apart from the partitioning logs. These can be found in the experiments folder after the experiments have completed running:
-1. `<graph_name>_results_table.csv`!
+1. `<graph_name>_results_table.csv`
 
-[image](https://github.com/Anirban600/EAT-DistGNN/assets/55611035/0f1d1bce-1390-4156-84e1-982e9232218f)
+![image](https://github.com/Anirban600/EAT-DistGNN/assets/55611035/0f1d1bce-1390-4156-84e1-982e9232218f)
 
 The first 3 rows are the results for one graph as reported in Table 2: Comparing performance metrics of various algorithms for different graph datasets. Scores are reported as percentages and the last row gives results for that graph as reported in Table 6: Wall clock times (in sec) across all the 4 partitions of each partitioning scheme for various graph datasets.
 
