@@ -160,13 +160,13 @@ The following files containing the results will be generated apart from the part
 
 ![image](https://github.com/Anirban600/EAT-DistGNN/assets/55611035/0f1d1bce-1390-4156-84e1-982e9232218f)
 
-The first 3 rows are the results for one graph as reported in Table 2: Comparing performance metrics of various algorithms for different graph datasets. Scores are reported as percentages and the last row gives results for that graph as reported in Table 6: Wall clock times (in sec) across all the 4 partitions of each partitioning scheme for various graph datasets.
+The first 3 rows are the results for one graph as reported in Table 2: Comparing performance metrics of various algorithms for different graph datasets. Scores are reported as percentages and the last row gives results for that graph as reported in Table 6: Wall clock times (in sec) across all the 4 partitions of each partitioning scheme for various graph datasets.
 
 2. `metrics_compared_<graph_name>.jpg
 
 ![image](https://github.com/Anirban600/EAT-DistGNN/assets/55611035/1cd00b82-04c0-4fb5-b131-5e32f46bf917)
 
-This is one column of graph as presented in Figure 6: The convergence curves for training loss, validation micro and macro-F1 scores for Flickr, Reddit, Yelp and OGBNProducts using varoius partitioning schemes.
+This is one column of graph as presented in Figure 6: The convergence curves for training loss, validation micro and macro-F1 scores for Flickr, Reddit, Yelp and OGBN-Products using varoius partitioning schemes.
 
 3. `speed_plot_<graph_name>.jpg`
 

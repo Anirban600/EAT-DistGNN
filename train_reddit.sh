@@ -7,7 +7,7 @@ chmod +x partition_reddit.sh
 chmod +x deploy_trainers.sh
 
 #Create all partitions
-./partition_flickr.sh > ./partitions/partition_log_reddit.txt
+./partition_reddit.sh > ./partitions/partition_log_reddit.txt
 
 #Reddit METIS
 ./deploy_trainers.sh -G reddit -P metis -n 41 -p 1.0 -d 0.5 -r 0.003 -s 15 -v default -e 100 -c 1

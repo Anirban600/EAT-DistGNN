@@ -7,7 +7,7 @@ chmod +x partition_yelp.sh
 chmod +x deploy_trainers.sh
 
 #Create all partitions
-./partition_flickr.sh > ./partitions/partition_log_yelp.txt
+./partition_yelp.sh > ./partitions/partition_log_yelp.txt
 
 #Reddit METIS
 ./deploy_trainers.sh -G yelp -P metis -n 100 -p 1.0 -d 0.1 -r 0.0001 -s 20 -v default -e 100 -c 1
