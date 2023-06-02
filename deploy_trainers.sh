@@ -57,7 +57,7 @@ mkdir -p "experiments/$graph_name/$exp_name/results"
 metrics_path="experiments/$graph_name/$exp_name/results"
 
 # source /home/ubuntu/miniconda3/bin/activate; conda activate envforgnn
-source /etc/profile.d/modules.sh; module load anaconda3
+# source /etc/profile.d/modules.sh; module load anaconda3
 python3 training_code/launch_training.py \
         --workspace $(pwd) \
         --num_trainers 1 \

@@ -647,7 +647,7 @@ def submit_jobs(args, udf_command, dry_run=False):
                 else cmd
             )
 #             source /etc/profile.d/modules.sh; module load anaconda3; conda activate envforgnn; module load codes/gpu/cuda/11.6; 
-            cmd = "cd " + \
+            cmd = "source /home/ubuntu/miniconda3/bin/activate; conda activate envforgnn; cd " + \
                 str(args.workspace) + "; " + cmd
             servers_cmd.append(cmd)
             if not dry_run: 
@@ -701,7 +701,7 @@ def submit_jobs(args, udf_command, dry_run=False):
             else cmd
         )
 #         source /etc/profile.d/modules.sh; module load anaconda3; conda activate envforgnn; module load codes/gpu/cuda/11.6; 
-        cmd = "cd " + \
+        cmd = "source /home/ubuntu/miniconda3/bin/activate; conda activate envforgnn; cd " + \
             str(args.workspace) + "; " + cmd
         clients_cmd.append(cmd)
         if not dry_run:

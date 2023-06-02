@@ -5,10 +5,10 @@
 #SBATCH --partition=compute
 #SBATCH --output=partitions/partition_log_ogbn-products.txt
 
-
-#conda activate envforgnn
-module load anaconda3
-module load codes/gpu/cuda/11.6
+source /home/ubuntu/miniconda3/bin/activate
+conda activate envforgnn
+# module load anaconda3
+# module load codes/gpu/cuda/11.6
 
 python3 partition_code/partition_default.py \
                       --dataset ogbn-products \
