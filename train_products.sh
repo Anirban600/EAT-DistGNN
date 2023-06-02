@@ -7,7 +7,7 @@ chmod +x partition_products.sh
 chmod +x deploy_trainers.sh
 
 #Create all partitions
-./partition_products.sh > ./partitions/partition_log_products.txt
+./partition_products.sh > ./partitions/partition_log_ogbn-products.txt
 
 #Reddit METIS
 ./deploy_trainers.sh -G products -P metis -n 47 -p 1.0 -d 0.5 -r 0.001 -s 15 -v default -e 100 -c 1
