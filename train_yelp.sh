@@ -1,9 +1,19 @@
+#!/bin/sh
+#SBATCH -N 4
+#SBATCH --ntasks-per-node=2
+#SBATCH --job-name=yelp_exp
+#SBATCH --partition=standard
+#SBATCH --output=yelp_logs.txt
+
+python3 training_code/ip_fetch.py
+sleep 5
+#module load python/conda-python/3.9
+#module list
+
 #Directories to store the partitions and experiment results
-mkdir -p ./partitions
-mkdir -p ./experiments/yelp
+mkdir -p experiments/yelp
 
 #Update perimission to allow execution
-chmod +x partition_yelp.sh
 chmod +x deploy_trainers.sh
 
 #Create all partitions

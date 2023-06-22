@@ -31,7 +31,9 @@ from best_hparams import BEST_HPARAMS
 multilabel = {
     'yelp': True,
     'reddit': False,
-    'flickr': False
+    'flickr': False,
+    'ogbn-products': False,
+    'ogbn-papers': False
 }
 
 def load_subtensor(g, seeds, input_nodes, device, load_feat=True):
@@ -81,19 +83,11 @@ def evaluate(ensemble, g, inputs, labels, nid, batch_size, device, agg, n_classe
     batch_size : Number of nodes to compute at the same time.
     device : The GPU device to evaluate on.
     """
-    if nid == None:
-        eval_nid = dgl.distributed.node_split(
-            np.arange(g.num_nodes()),
-            g.get_partition_book(),
-            force_even=True,
-        )
-    else:
-        train_nid = dgl.distributed.node_split(
-            g.ndata["train_mask"],
-            g.get_partition_book(),
-            force_even=True,
-        )
-        eval_nid = th.cat((train_nid,nid))
+    eval_nid = dgl.distributed.node_split(
+        np.arange(g.num_nodes()),
+        g.get_partition_book(),
+        force_even=agg,
+    )
 
     ensemble[0].eval()
     with th.no_grad():
@@ -281,6 +275,54 @@ def train_model(model, loss_fcn, g, train_nid, device, metrics, args, val_nid, a
                 print("Stopping Early")
                 break
 
+def split_nodes(g, force_even):
+    pb = g.get_partition_book()
+    if "trainer_id" in g.ndata:
+        train_nid = dgl.distributed.node_split(
+            g.ndata["train_mask"],
+            pb,
+            force_even=force_even,
+            node_trainer_ids=g.ndata["trainer_id"],
+        )
+        val_nid = dgl.distributed.node_split(
+            g.ndata["val_mask"],
+            pb,
+            force_even=force_even,
+            node_trainer_ids=g.ndata["trainer_id"],
+        )
+        test_nid = dgl.distributed.node_split(
+            g.ndata["test_mask"],
+            pb,
+            force_even=force_even,
+            node_trainer_ids=g.ndata["trainer_id"],
+        )
+    else:
+        train_nid = dgl.distributed.node_split(
+            g.ndata["train_mask"], pb, force_even=force_even
+        )
+        val_nid = dgl.distributed.node_split(
+            g.ndata["val_mask"], pb, force_even=force_even
+        )
+        test_nid = dgl.distributed.node_split(
+            g.ndata["test_mask"], pb, force_even=force_even
+        )
+    local_nid = pb.partid2nids(pb.partid).detach().numpy()
+    print(
+        "part {}, part {}, train: {} (local: {}), val: {} (local: {}), test: {} "
+        "(local: {})".format(
+            pb.partid,
+            g.rank(),
+            len(train_nid),
+            len(np.intersect1d(train_nid.numpy(), local_nid)),
+            len(val_nid),
+            len(np.intersect1d(val_nid.numpy(), local_nid)),
+            len(test_nid),
+            len(np.intersect1d(test_nid.numpy(), local_nid)),
+        )
+    )
+
+    return train_nid, val_nid, test_nid
+
 def run(args, device, data):
     # Unpack data
     train_nid, val_nid, test_nid, in_feats, n_classes, g = data
@@ -337,6 +379,7 @@ def run(args, device, data):
         loss_fcn = FocalLoss(n_classes, gamma=args["gamma"], multilabel=multilabel[args['graph_name']])
         # loss_fcn = th.nn.CrossEntropyLoss()
         loss_fcn = loss_fcn.to(device)
+        train_nid, val_nid, test_nid = split_nodes(g, True)
         
         general_model = DistSAGE(
             in_feats,
@@ -348,6 +391,7 @@ def run(args, device, data):
         )
         general_model = general_model.to(device)
         general_model = th.nn.parallel.DistributedDataParallel(general_model)
+
 
         with general_model.join():
 
@@ -382,6 +426,7 @@ def run(args, device, data):
         # loss_fcn = th.nn.CrossEntropyLoss()
         loss_fcn = loss_fcn.to(device)
         # args["log_every"] = len(train_nid) // args["batch_size"] - 1
+        train_nid, val_nid, test_nid = split_nodes(g, False)
 
         personal_model = DistSAGE(
             in_feats,
@@ -529,50 +574,6 @@ def main(args):
     )
     print(socket.gethostname(), "rank:", g.rank())
     
-    pb = g.get_partition_book()
-    if "trainer_id" in g.ndata:
-        train_nid = dgl.distributed.node_split(
-            g.ndata["train_mask"],
-            pb,
-            force_even=True,
-            node_trainer_ids=g.ndata["trainer_id"],
-        )
-        val_nid = dgl.distributed.node_split(
-            g.ndata["val_mask"],
-            pb,
-            force_even=True,
-            node_trainer_ids=g.ndata["trainer_id"],
-        )
-        test_nid = dgl.distributed.node_split(
-            g.ndata["test_mask"],
-            pb,
-            force_even=True,
-            node_trainer_ids=g.ndata["trainer_id"],
-        )
-    else:
-        train_nid = dgl.distributed.node_split(
-            g.ndata["train_mask"], pb, force_even=True
-        )
-        val_nid = dgl.distributed.node_split(
-            g.ndata["val_mask"], pb, force_even=True
-        )
-        test_nid = dgl.distributed.node_split(
-            g.ndata["test_mask"], pb, force_even=True
-        )
-    local_nid = pb.partid2nids(pb.partid).detach().numpy()
-    print(
-        "part {}, part {}, train: {} (local: {}), val: {} (local: {}), test: {} "
-        "(local: {})".format(
-            pb.partid,
-            g.rank(),
-            len(train_nid),
-            len(np.intersect1d(train_nid.numpy(), local_nid)),
-            len(val_nid),
-            len(np.intersect1d(val_nid.numpy(), local_nid)),
-            len(test_nid),
-            len(np.intersect1d(test_nid.numpy(), local_nid)),
-        )
-    )
     # del local_nid
     if args["num_gpus"] == -1:
         device = th.device("cpu")
@@ -588,7 +589,7 @@ def main(args):
 
     # Pack data
     in_feats = g.ndata["feat"].shape[1]
-    data = train_nid, val_nid, test_nid, in_feats, n_classes, g
+    data = in_feats, n_classes, g
     if args["tune"]:
         tune_hyperparams(args, device, data)
     else:

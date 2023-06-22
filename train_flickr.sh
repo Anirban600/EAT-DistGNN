@@ -1,13 +1,20 @@
-Directories to store the partitions and experiment results
-mkdir -p ./partitions
-mkdir -p ./experiments/flickr
+#!/bin/sh
+#SBATCH -N 4
+#SBATCH --ntasks-per-node=2
+#SBATCH --job-name=flickr_exp
+#SBATCH --partition=standard
+#SBATCH --output=flickr_logs.txt
+
+python3 training_code/ip_fetch.py
+sleep 5
+#module load python/conda-python/3.9
+#module list
+
+#Directories to store the partitions and experiment results
+mkdir -p experiments/flickr
 
 #Update perimission to allow execution
-chmod +x partition_flickr.sh
 chmod +x deploy_trainers.sh
-
-#Create all partitions
-./partition_flickr.sh > ./partitions/partition_log_flickr.txt
 
 #Flickr METIS
 ./deploy_trainers.sh -G flickr -P metis -n 7 -p 1.0 -d 0.5 -s 15 -v default -e 100 -c 1
