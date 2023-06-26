@@ -36,6 +36,8 @@ multilabel = {
     'ogbn-papers': False
 }
 
+all_nid = None
+
 def load_subtensor(g, seeds, input_nodes, device, load_feat=True):
     """
     Copys features and labels of a set of nodes onto GPU.
@@ -83,15 +85,11 @@ def evaluate(ensemble, g, inputs, labels, nid, batch_size, device, agg, n_classe
     batch_size : Number of nodes to compute at the same time.
     device : The GPU device to evaluate on.
     """
-    eval_nid = dgl.distributed.node_split(
-        np.arange(g.num_nodes()),
-        g.get_partition_book(),
-        force_even=agg,
-    )
+    global all_nid
 
     ensemble[0].eval()
     with th.no_grad():
-        pred = ensemble[0].inference(g, inputs, eval_nid, batch_size, device)
+        pred = ensemble[0].inference(g, inputs, all_nid, batch_size, device, agg)
     ensemble[0].train()
 
     if report:
@@ -107,6 +105,8 @@ def evaluate(ensemble, g, inputs, labels, nid, batch_size, device, agg, n_classe
     return compute_acc(pred[nid], labels[nid], agg=agg, multilabel=multilabel)
 
 def train_model(model, loss_fcn, g, train_nid, device, metrics, args, val_nid, agg, stopper=None, reg_model=None):
+
+    lmbda = th.tensor(args["llambda"], requires_grad=True)
     
     process = psutil.Process()
     A = g.local_partition.adj(scipy_fmt='coo')
@@ -114,6 +114,8 @@ def train_model(model, loss_fcn, g, train_nid, device, metrics, args, val_nid, a
     local_nid = pb.partid2nids(pb.partid).detach().numpy()
     local_train_nid = np.intersect1d(train_nid.numpy(), local_nid)
     halo_train_nid = np.setdiff1d(train_nid.numpy(), local_nid)
+    lbs = LabelBalancedSampler(A, g.ndata["label"][local_train_nid].numpy(), pb.nid2localnid(local_train_nid, pb.partid).numpy(), multilabel=multilabel[args['graph_name']])
+    probs = lbs.all_probabilities()
 
     sampler = dgl.dataloading.NeighborSampler(
         [int(fanout) for fanout in args["fan_out"].split(",")]
@@ -125,10 +127,11 @@ def train_model(model, loss_fcn, g, train_nid, device, metrics, args, val_nid, a
             sample_idx = train_nid
             args["log_every"] = len(train_nid) // args["batch_size"] - 1
         else:
-            lbs = LabelBalancedSampler(A, g.ndata["label"][local_train_nid].numpy(), pb.nid2localnid(local_train_nid, pb.partid).numpy(), multilabel=multilabel[args['graph_name']])
-            probs = lbs.all_probabilities()
-            sample_idx = np.random.choice(local_train_nid, size=int(int(len(train_nid)/4)-len(halo_train_nid)), replace=False, p=probs)
-            sample_idx = th.cat((th.tensor(halo_train_nid, device=device),th.tensor(sample_idx, device=device)))
+            ln = min(len(local_train_nid), int(int(len(train_nid)/3)-len(halo_train_nid)//4))
+            hn = min(len(halo_train_nid), int(int(len(train_nid)/3)-ln))
+            sample_idx = np.random.choice(local_train_nid, size=ln, replace=False, p=probs)
+            select_halo_nid = np.random.choice(halo_train_nid, size=hn, replace=False)
+            sample_idx = th.cat((th.tensor(select_halo_nid, device=device),th.tensor(sample_idx, device=device)))
             # print(len(sample_idx))
             args["log_every"] = len(sample_idx) // args["batch_size"]
         
@@ -143,7 +146,11 @@ def train_model(model, loss_fcn, g, train_nid, device, metrics, args, val_nid, a
         return train_dataloader
 
     iter_tput = []
-    optimizer = optim.Adam(model.parameters(), lr=args['lr'])
+    optimizer = optim.Adam([
+        {"params": model.parameters()},
+        {"params":[lmbda], "lr": args['lr']}
+        ],lr=args['lr'])
+    # optimizer = optim.Adam(model.parameters(),lr=args['lr'])
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=50, gamma=0.5)
     if args['graph_name'] == 'yelp':
         scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=40, gamma=0.3)
@@ -187,16 +194,17 @@ def train_model(model, loss_fcn, g, train_nid, device, metrics, args, val_nid, a
             optimizer.zero_grad()
             if reg_model != None:
                 #personal weight regularization
-                p_vec, g_vec = [], []
-                for i in range(len(model.layers)):
-                    for pl,gl in zip(model.layers[i].parameters(), reg_model.layers[i].parameters()):
-                        p_vec.append(th.flatten(pl.data))
-                        g_vec.append(th.flatten(gl.data))
-                p_ten, g_ten = th.cat(p_vec), th.cat(g_vec)
-                regularization = th.linalg.vector_norm(p_ten - g_ten)
+                regularization = 0
+                # Iterate over the parameters of both models
+                for p1, p2 in zip(model.parameters(), reg_model.parameters()):
+                    # Add the squared difference of each parameter to the diff
+                    regularization += th.sum((p2 - p1) ** 2)
                 # if g.rank() == 2:
-                #     print(loss, regularization)
-                loss = loss + args['llambda']*regularization
+                #     print(loss, regularization, args['llambda'])
+                lmbda = th.clamp(lmbda, 0.0, 1.0)
+                loss = loss + lmbda*regularization
+                # if g.rank() == 2:
+                #     print(loss)
             loss.backward()
             compute_end = time.time()
             forward_time += forward_end - start
@@ -275,6 +283,15 @@ def train_model(model, loss_fcn, g, train_nid, device, metrics, args, val_nid, a
                 print("Stopping Early")
                 break
 
+        print("rank:", g.rank(), "Final lambda:", lmbda)
+    
+def calc_entropy(labels):
+    # Count the frequency of each label
+    counts = th.bincount(labels)
+    # Divide by the length of the tensor to get probabilities
+    probs = counts.float() / labels.shape[0]
+    return th.sum(th.special.entr(probs))
+
 def split_nodes(g, force_even):
     pb = g.get_partition_book()
     if "trainer_id" in g.ndata:
@@ -325,7 +342,8 @@ def split_nodes(g, force_even):
 
 def run(args, device, data):
     # Unpack data
-    train_nid, val_nid, test_nid, in_feats, n_classes, g = data
+    global all_nid
+    in_feats, n_classes, g = data
     pb = g.get_partition_book()
     No_partition = pb.num_partitions()
     print("Number of partitions: ", No_partition)
@@ -380,6 +398,9 @@ def run(args, device, data):
         # loss_fcn = th.nn.CrossEntropyLoss()
         loss_fcn = loss_fcn.to(device)
         train_nid, val_nid, test_nid = split_nodes(g, True)
+        all_nid = th.cat((train_nid, val_nid, test_nid))
+        args['entropy'] = calc_entropy(g.ndata['label'][train_nid])
+        print("Rank", g.rank(), "Entropy", args['entropy'])
         
         general_model = DistSAGE(
             in_feats,
@@ -407,7 +428,7 @@ def run(args, device, data):
             th.save(general_model.module.state_dict(), f'{args["metrics_path"]}/es_checkpoint_{g.rank()}.pt')
         
         gen_eval_start = time.time()
-        temp = evaluate([general_model.module], g, g.ndata["feat"], g.ndata["label"], None, args["batch_size_eval"], device, False, n_classes, multilabel[args['graph_name']], True, (train_nid, val_nid, test_nid))
+        temp = evaluate([general_model.module], g, g.ndata["feat"], g.ndata["label"], None, args["batch_size_eval"], device, True, n_classes, multilabel[args['graph_name']], True, (train_nid, val_nid, test_nid))
         gen_eval_end = time.time()
         final_report['GEN'] = temp[0]
     gen_end = time.time()
@@ -427,6 +448,9 @@ def run(args, device, data):
         loss_fcn = loss_fcn.to(device)
         # args["log_every"] = len(train_nid) // args["batch_size"] - 1
         train_nid, val_nid, test_nid = split_nodes(g, False)
+        all_nid = th.cat((train_nid, val_nid, test_nid))
+        args['entropy'] = calc_entropy(g.ndata['label'][train_nid])
+        print("Rank", g.rank(), "Entropy", args['entropy'])
 
         personal_model = DistSAGE(
             in_feats,
@@ -452,12 +476,13 @@ def run(args, device, data):
         else:
             th.save(personal_model.state_dict(), f'{args["metrics_path"]}/es_checkpoint_{g.rank()}.pt')
     
+        g.barrier()
         per_eval_start = time.time()
-        temp = evaluate([personal_model], g, g.ndata["feat"], g.ndata["label"], None, args["batch_size_eval"], device, False, n_classes, multilabel[args['graph_name']], True, (train_nid, val_nid, test_nid))
+        temp = evaluate([personal_model], g, g.ndata["feat"], g.ndata["label"], None, args["batch_size_eval"], device, True, n_classes, multilabel[args['graph_name']], True, (train_nid, val_nid, test_nid))
         per_eval_end = time.time()
+        g.barrier()
         final_report['PER'] = temp[0]
     per_end = time.time()
-    g.barrier()
     acc_metric = 'micro avg' if multilabel[args['graph_name']] else 'accuracy'
     gen_train_time = 0 if args['genper_ratio']==0 else gen_end-gen_start - (gen_eval_end-gen_eval_start)
     per_train_time = 0 if args['genper_ratio']==1 else per_end-per_start - (per_eval_end-per_eval_start)

@@ -34,7 +34,7 @@ class DistSAGE(nn.Module):
 
         return h
 
-    def inference(self, g, x, nodes, batch_size, device):
+    def inference(self, g, x, nodes, batch_size, device, sync):
         """
         Inference with the GraphSAGE model on full neighbors (i.e. without
         neighbor sampling).
@@ -93,6 +93,8 @@ class DistSAGE(nn.Module):
                 y[output_nodes] = h.cpu()
 
             x = y
+            if sync==True:
+                g.barrier()
         return y
 
     @contextmanager
