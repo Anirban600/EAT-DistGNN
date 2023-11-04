@@ -75,7 +75,7 @@ While running partition script of the desired dataset say `partition_<dataset>.s
 
 ### Log files of partitions:
 
-While running the scripts, it parallelly create log files for each dataset seperately into the `partitions` directory with name as `partition_log_<dataset>.txt`. The log file contains the execution status reports of the three algorithms used in partitioning i.e. METIS, Edge-Weighted and Entropy-Balanced following order mentioned and seperated by lines.
+While running the scripts, it parallelly create log files for each dataset seperately into the `partitions` directory with name as `partition_log_<dataset>.txt`. The log file contains the execution status reports of the two algorithms used in partitioning i.e. METIS and Edge-Weighted following order mentioned and seperated by lines.
 
 At the end of log file, a table is generated gathering the entropies and execution times of all algorithms as reported in the Table 4 in the [paper](https://).
 
@@ -93,11 +93,6 @@ partition_log_<dataset>.txt
       --------------------------------------------------
       --------------------------------------------------
       
-      <log report of Entropy-Balanced partition>
-      
-      --------------------------------------------------
-      --------------------------------------------------
-      
       <Table containing entropy and execution time>
 ```
 
@@ -107,8 +102,7 @@ After running the partition script, it saves the partitioned graph into a folder
 
       <dataset>/
       ├── metis/
-      ├── edge-weighted/
-      └── entropy-balanced/
+      └── edge-weighted/
 
 ### Directory Structure of `/partitions` folder
 
@@ -122,18 +116,13 @@ After running all scripts, the directory structure of `/partitions` will look li
       |   |   ├── part1/
       |   |   ├── part2/
       |   |   └── part3/
-      |   ├── edge-weighted
-      |   |   ├── flickr.json
-      |   |   ├── part0/
-      |   |   ├── part1/
-      |   |   ├── part2/
-      |   |   └── part3/
-      |   └── entropy-balanced
+      |   └── edge-weighted
       |       ├── flickr.json
       |       ├── part0/
       |       ├── part1/
       |       ├── part2/
       |       └── part3/
+      |
       ├── reddit/
       |   └── ...
       ├── yelp/
