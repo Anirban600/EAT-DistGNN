@@ -35,24 +35,9 @@ echo -e "\n\n===================================================================
 echo -e "============================================================================================================================================\n\n"
 
 
-python3 partition_code/partition_entropy_balance.py \
-                      --dataset reddit \
-                      --num_parts 100 \
-                      --balance_train \
-                      --balance_edges \
-                      --grp_parts 4 \
-                      --num_run 15 \
-                      --output partitions/reddit/entropy-balanced
-
-
-echo -e "\n\n============================================================================================================================================"
-echo -e "============================================================================================================================================\n\n"
-
-
 python3 partition_code/print_all_entropies.py \
                       --dataset Reddit \
                       --json_metis partitions/reddit/metis/reddit.json \
                       --json_ew partitions/reddit/edge-weighted/reddit.json \
-                      --json_eb partitions/reddit/entropy-balanced/reddit.json \
                       --log partitions/partition_log_reddit.txt \
                       --no_of_part 4

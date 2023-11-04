@@ -35,24 +35,9 @@ echo -e "\n\n===================================================================
 echo -e "============================================================================================================================================\n\n"
 
 
-python3 partition_code/partition_entropy_balance.py \
-                      --dataset flickr \
-                      --num_parts 100 \
-                      --balance_train \
-                      --balance_edges \
-                      --grp_parts 4 \
-                      --num_run 15 \
-                      --output partitions/flickr/entropy-balanced
-
-
-echo -e "\n\n============================================================================================================================================"
-echo -e "============================================================================================================================================\n\n"
-
-
 python3 partition_code/print_all_entropies.py \
                       --dataset Flickr \
                       --json_metis partitions/flickr/metis/flickr.json \
                       --json_ew partitions/flickr/edge-weighted/flickr.json \
-                      --json_eb partitions/flickr/entropy-balanced/flickr.json \
                       --log partitions/partition_log_flickr.txt \
                       --no_of_part 4
