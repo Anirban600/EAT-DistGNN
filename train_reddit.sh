@@ -22,8 +22,5 @@ chmod +x deploy_trainers.sh
 #Reddit Edge_Weighted
 ./deploy_trainers.sh -G reddit -S 1 -P edge-weighted -n 41 -p 0.34 -d 0.5 -r 0.001 -s 15 -v cbs+gp -e 100 -c 1
 
-#Reddit Entropy_Balanced
-./deploy_trainers.sh -G reddit -S 1 -P entropy-balanced -n 41 -p 0.34 -d 0.5 -r 0.001 -s 15 -v cbs+gp+fl -e 100 -c 0 -g 0.1
-
 #Make Results
 python3 make_results.py --graph_name reddit

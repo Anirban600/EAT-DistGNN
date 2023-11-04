@@ -20,10 +20,7 @@ chmod +x deploy_trainers.sh
 ./deploy_trainers.sh -G flickr -P metis -n 7 -p 1.0 -d 0.5 -s 15 -v default -e 100 -c 1
 
 #Flickr Edge_Weighted
-./deploy_trainers.sh -G flickr -P edge-weighted -n 7 -p 0.34 -d 0.5 -s 15 -v gp+fl -e 100 -c 1
-
-#Flickr Entropy_Balanced
-./deploy_trainers.sh -G flickr -P entropy-balanced -n 7 -p 0.34 -d 0.5 -s 15 -v gp+fl -e 100 -c 0
+./deploy_trainers.sh -G flickr -P edge-weighted -n 7 -p 0.34 -d 0.5 -s 15 -v gp -e 100 -c 1
 
 #Make Results
 python3 make_results.py --graph_name flickr

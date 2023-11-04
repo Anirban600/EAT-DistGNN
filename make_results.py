@@ -20,12 +20,12 @@ def read_results(parent_folder):
 def compare_results(results, experiments, graph, step):
     plt.figure(figsize=(4,10))
 
-    linestyle = ['dotted', 'dashdot', 'solid']
-    color = ['k', 'b', 'g']
-    graphs = ['avg_train_loss', 'avg_val_macf1', 'avg_val_micf1']
-    labels = ['Train Loss', 'Val Macro F1', 'Val Micro F1']
+    linestyle = ['dotted', 'dashdot']
+    color = ['k', 'b']
+    graphs = ['avg_train_loss', 'avg_val_micf1']
+    labels = ['Train Loss', 'Val Micro F1']
     for g in range(len(graphs)):
-        plt.subplot(3, 1, g+1)
+        plt.subplot(2, 1, g+1)
         for i in range(0,len(results),1):
             plt.plot(range(len(results[i][graphs[g]])), results[i][graphs[g]], label=experiments[i][1], linestyle=linestyle[i], color=color[i], linewidth=2)
 
@@ -62,22 +62,8 @@ def plot_results(results, parent_folder):
 
     plt.figure(figsize=(15,8))
     # plt.rc('axes', color_cycle=['r', 'g', 'b', 'y'])
-    plt.subplot(2, 3, 1)
-    i = 0
-    results['avg_train_macf1'] = [0]*len(epochs)
-    while 'train_macf1_'+str(i) in results:
-        for j in range(len(epochs)):
-            results['avg_train_macf1'][j] += results['train_macf1_'+str(i)][j]
-        plt.plot(range(len(results['train_macf1_'+str(i)])), results['train_macf1_'+str(i)], label='Train macro rank-'+str(i))
-        i+=1
-    for j in range(len(results['avg_train_macf1'])):
-            results['avg_train_macf1'][j] /= i
-    plt.plot(epochs, results['avg_train_macf1'], label='Avg macf1')
-    plt.xlabel('epochs')
-    plt.title('Training macf1')
-    plt.legend(loc=0)
 
-    plt.subplot(2, 3, 2)
+    plt.subplot(2, 2, 1)
     i = 0
     results['avg_train_micf1'] = [0]*len(epochs)
     while 'train_micf1_'+str(i) in results:
@@ -92,7 +78,7 @@ def plot_results(results, parent_folder):
     plt.title('Training micf1')
     plt.legend(loc=0)
 
-    plt.subplot(2, 3, 3)
+    plt.subplot(2, 2, 2)
     i = 0
     results['avg_train_loss'] = [0]*len(epochs)
     while 'train_loss_'+str(i) in results:
@@ -110,24 +96,7 @@ def plot_results(results, parent_folder):
     plt.title('Training Loss')
     plt.legend(loc=0)
 
-    plt.subplot(2, 3, 4)
-    i = 0
-    results['avg_val_macf1'] = [0]*len(epochs)
-    while 'val_macf1_'+str(i) in results:
-        for j in range(len(epochs)):
-            results['avg_val_macf1'][j] += results['val_macf1_'+str(i)][j]
-        plt.plot(range(len( results['val_macf1_'+str(i)])), results['val_macf1_'+str(i)], label='Val macf1 rank-'+ str(i))
-        i+=1
-    for j in range(len(results['avg_val_macf1'])):
-            results['avg_val_macf1'][j] /= i
-    plt.plot(epochs, results['avg_val_macf1'], label='Avg Val macf1')
-    # plt.ylim(35, 100)
-    plt.xlabel('epochs')
-    plt.ylabel('macf1')
-    plt.title('Val macf1')
-    plt.legend(loc=0)
-
-    plt.subplot(2, 3, 5)
+    plt.subplot(2, 2, 3)
     i = 0
     results['avg_val_micf1'] = [0]*len(epochs)
     while 'val_micf1_'+str(i) in results:
@@ -144,7 +113,7 @@ def plot_results(results, parent_folder):
     plt.title('Val micf1')
     plt.legend(loc=0)
 
-    plt.subplot(2, 3, 6)
+    plt.subplot(2, 2, 4)
     i = 0
     results['avg_train_speed'] = [0]*len(epochs)
     while 'train_speed_'+str(i) in results:
@@ -162,7 +131,7 @@ def plot_results(results, parent_folder):
     plt.legend(loc=0)
 
     plt.subplots_adjust(wspace=0.5,hspace=0.5)
-    plt.savefig(os.path.join(parent_folder[0],f'metrics_combined.png'))
+    plt.savefig(os.path.join(parent_folder[0],f'metrics_combined.jpg'))
     return results
 
 def get_step(results):
@@ -184,25 +153,22 @@ if __name__ == "__main__":
     # print(os.getcwd())
     # print(os.listdir())
     mapv = {
-        'metis': 'Metis+DistGNN',
-        'edge-weighted': 'EW+FL+CBS+GP',
-        'entropy-balanced': 'EB+FL+CBS+GP'
+        'metis': 'DistDGL',
+        'edge-weighted': 'EW+CBS+GP',
     }
 
-    mapp = ['DistGNN', 'GP', 'GP+FL']
+    mapp = ['DistDGL', 'GP', 'GP+FL']
 
     mapm = {
         'best_acc': 0,
-        'best_mac': 1,
-        'best_wgt': 2,
-        'wall_clock_time': 3
+        'best_wgt': 1,
+        'train_time': 2
     }
 
     table = {
-        'Metric': ['Micro F1', 'Macro F1', 'Weighted F1', 'Wall Clock Time'],
-        'Metis+DistGNN': [0, 0, 0, 0],
-        'EW+FL+CBS+GP': [0, 0, 0, 0],
-        'EB+FL+CBS+GP': [0, 0, 0, 0]
+        'Metric': ['Micro F1', 'Weighted F1', 'Train Time(s)'],
+        'DistDGL': [0, 0, 0],
+        'EW+CBS+GP': [0, 0, 0],
     }
 
     if args.graph_name == 'papers':

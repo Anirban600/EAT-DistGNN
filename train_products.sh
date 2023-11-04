@@ -16,14 +16,11 @@ mkdir -p experiments/products
 #Update perimission to allow execution
 chmod +x deploy_trainers.sh
 
-#Reddit METIS
+#OGBN-Products METIS
 ./deploy_trainers.sh -G ogbn-products -P metis -n 47 -p 1.0 -d 0.5 -r 0.001 -s 15 -v default -e 100 -c 1
 
-#Reddit Edge_Weighted
+#OGBN-Products Edge_Weighted
 ./deploy_trainers.sh -G ogbn-products -S 1 -P edge-weighted -n 47 -p 0.34 -d 0.5 -r 0.004 -s 15 -v cbs+gp -e 100 -c 1
-
-#Reddit Entropy_Balanced
-./deploy_trainers.sh -G ogbn-products -S 1 -P entropy-balanced -n 47 -p 0.34 -d 0.5 -r 0.004 -s 15 -v cbs+gp+fl -e 100 -c 0 -g 0.1
 
 #Make Results
 python3 make_results.py --graph_name ogbn-products
