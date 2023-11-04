@@ -158,20 +158,20 @@ The script first creates the necessary partitions and then runs training on them
 The following files containing the results will be generated apart from the partitioning logs. These can be found in the experiments folder after the experiments have completed running:
 1. `<graph_name>_results_table.csv`
 
-![image_results_table](image.png)
+![image_results_table](images/image.png)
 
 The first 3 rows are the results for one graph as reported in Table 2: Comparing performance metrics of various algorithms. Scores are reported as percentages and best performing technique is highlighted
 
 2. `metrics_compared_<graph_name>.jpg
 
-![image_materics_compared](image-1.png)
+![image_materics_compared](images/image-1.png)
 
 This is one column of graph as presented in Figure 3: The convergence curves for training loss, validation micro and macro-F1 scores for Flickr, Reddit, Yelp and OGBN-Products using varoius partitioning schemes.
 
 3. `speed_plot_<graph_name>.jpg`
 
-![image_speed](https://github.com/Anirban600/EAT-DistGNN/assets/55611035/25d3f8da-6c9e-4f9b-b3ad-5655f7610e11)
+![images_speed](images/image-3.png)
 
 4. Additional plots for validation-training loss, micro-f1 scores and speed for individual partitions will also be generated in the results folder of each experiment by the name `metrics_combined.jpg`
 
-![Alt text](image-2.png)
+![image_metrics_combined](images/image-2.png)
