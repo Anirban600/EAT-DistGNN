@@ -1,6 +1,6 @@
 # EAT-DistGNN
 
-### Short Paper accepted at ICDM'23. [Arxiv Link](https://github.com/Anirban600/EAT-DistGNN.git)
+### Short Paper accepted at ICDM'23. [Arxiv Link](https://arxiv.org/abs/2311.02399)
 
 ## Table of Contents
 - [Overview](#overview)
