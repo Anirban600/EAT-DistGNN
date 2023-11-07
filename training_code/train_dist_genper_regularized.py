@@ -20,7 +20,6 @@ import dgl
 import sklearn.metrics
 from sklearn.metrics import classification_report
 from early_stop import EarlyStopping
-from models.correct_and_smooth import CorrectAndSmooth
 from models.distsage import DistSAGE
 from models.focal_loss import FocalLoss
 from models.pick_sampler import LabelBalancedSampler

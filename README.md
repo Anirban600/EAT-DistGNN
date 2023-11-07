@@ -1,5 +1,7 @@
 # EAT-DistGNN
 
+### Short Paper accepted at ICDM'23. [Arxiv Link](https://github.com/Anirban600/EAT-DistGNN.git)
+
 ## Table of Contents
 - [Overview](#overview)
 - [Dataset Used](#dataset-used)
