@@ -5,7 +5,7 @@
 #SBATCH --partition=standard
 #SBATCH --output=yelp_logs.txt
 
-python3 training_code/ip_fetch.py
+python3.9 training_code/ip_fetch.py
 sleep 5
 #module load python/conda-python/3.9
 #module list
@@ -26,4 +26,4 @@ chmod +x deploy_trainers.sh
 ./deploy_trainers.sh -G yelp -S 1 -P edge-weighted -n 100 -p 0.34 -d 0.1 -r 0.001 -s 20 -v cbs+gp -e 300 -c 1
 
 #Make Results
-python3 make_results.py --graph_name yelp
+python3.9 make_results.py --graph_name yelp

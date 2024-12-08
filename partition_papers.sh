@@ -10,7 +10,7 @@ conda activate envforgnn
 # module load anaconda3
 # module load codes/gpu/cuda/11.6
 
-python3 partition_code/partition_default.py \
+python3.9 partition_code/partition_default.py \
                       --dataset ogbn-papers100M \
                       --num_parts 16 \
                       --balance_train \
@@ -22,7 +22,7 @@ echo -e "\n\n===================================================================
 echo -e "============================================================================================================================================\n\n"
 
 
-python3 partition_code/print_all_entropies.py \
+python3.9 partition_code/print_all_entropies.py \
                       --dataset "OGB-Papers" \
                       --json_metis partitions/ogbn-papers/metis/ogbn-papers100M.json \
                       --log partitions/partition_log_ogbn-papers.txt \

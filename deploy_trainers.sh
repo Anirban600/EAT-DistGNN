@@ -1,6 +1,6 @@
 #default
 training_file="training_code/train_dist_genper_regularized.py"
-ip_config_file="training_code/ip_config1234_30054.txt"
+ip_config_file="/root/EAT-DistGNN/training_code/ip_config1234_30054.txt"
 num_epochs=100
 batch_size=1000
 hidden=512
@@ -58,7 +58,7 @@ metrics_path="experiments/$graph_name/$exp_name/results"
 
 # source /home/ubuntu/miniconda3/bin/activate; conda activate envforgnn
 # source /etc/profile.d/modules.sh; module load anaconda3
-python3 training_code/launch_training.py \
+python3.9 training_code/launch_training.py \
         --workspace $(pwd) \
         --num_trainers 1 \
         --num_samplers 0 \
@@ -66,7 +66,7 @@ python3 training_code/launch_training.py \
         --num_omp_threads 1 \
         --part_config ${partition_path} \
         --ip_config ${ip_config_file} \
-            "python $training_file \
+            "python3.9 $training_file \
             --graph_name $graph_name \
             --ip_config $ip_config_file \
             --num_epochs $num_epochs \

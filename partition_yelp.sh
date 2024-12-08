@@ -10,7 +10,7 @@ conda activate envforgnn
 # module load anaconda3
 # module load codes/gpu/cuda/11.6
 
-python3 partition_code/partition_default.py \
+python3.9 partition_code/partition_default.py \
                       --dataset yelp \
                       --num_parts 4 \
                       --balance_train \
@@ -22,7 +22,7 @@ echo -e "\n\n===================================================================
 echo -e "============================================================================================================================================\n\n"
 
 
-python3 partition_code/partition_edge_weighted.py \
+python3.9 partition_code/partition_edge_weighted.py \
                       --dataset yelp \
                       --num_parts 4 \
                       --balance_train \
@@ -35,7 +35,7 @@ echo -e "\n\n===================================================================
 echo -e "============================================================================================================================================\n\n"
 
 
-python3 partition_code/print_all_yelp_entropies.py \
+python3.9 partition_code/print_all_yelp_entropies.py \
                       --dataset Yelp \
                       --json_metis partitions/yelp/metis/yelp.json \
                       --json_ew partitions/yelp/edge-weighted/yelp.json \

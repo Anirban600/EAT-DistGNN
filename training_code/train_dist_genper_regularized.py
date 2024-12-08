@@ -614,10 +614,7 @@ def main(args):
     # Pack data
     in_feats = g.ndata["feat"].shape[1]
     data = in_feats, n_classes, g
-    if args["tune"]:
-        tune_hyperparams(args, device, data)
-    else:
-        run(args, device, data)
+    run(args, device, data)
     td.barrier()
     print("parent ends")
 

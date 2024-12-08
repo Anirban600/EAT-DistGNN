@@ -1,0 +1,55 @@
+services:
+  container1:
+    build: .
+    container_name: container1
+    shm_size: "256m"
+    networks:
+      mynet:
+        ipv4_address: 192.168.1.2
+    ports:
+      - "2221:22" # SSH port mapping for external access
+    volumes:
+      - /home/anshul/EAT-DistGNN:/root/EAT-DistGNN
+
+  container2:
+    build: .
+    shm_size: "256m"
+    container_name: container2
+    networks:
+      mynet:
+        ipv4_address: 192.168.1.3
+    ports:
+      - "2222:22"
+    volumes:
+      - /home/anshul/EAT-DistGNN:/root/EAT-DistGNN
+
+  container3:
+    build: .
+    container_name: container3
+    shm_size: "256m"
+    networks:
+      mynet:
+        ipv4_address: 192.168.1.4
+    ports:
+      - "2223:22"
+    volumes:
+      - /home/anshul/EAT-DistGNN:/root/EAT-DistGNN
+
+  container4:
+    build: .
+    container_name: container4
+    shm_size: "256m"
+    networks:
+      mynet:
+        ipv4_address: 192.168.1.5
+    ports:
+      - "2224:22"
+    volumes:
+      - /home/anshul/EAT-DistGNN:/root/EAT-DistGNN
+
+networks:
+  mynet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.1.0/24

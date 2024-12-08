@@ -5,7 +5,7 @@
 #SBATCH --partition=standard
 #SBATCH --output=ogbn-papers_logs.txt
 
-python3 training_code/ip_fetch.py
+python3.9 training_code/ip_fetch.py
 sleep 5
 #module load python/conda-python/3.9
 #module list
@@ -23,4 +23,4 @@ chmod +x deploy_trainers.sh
 ./deploy_trainers.sh -G ogbn-papers -P metis -n 172 -p 0.5 -d 0.1 -r 0.01 -v gp -e 60 -c 1 -l 0.01 -b 4000 -h 256
 
 #Make Results
-python3 make_results.py --graph_name ogbn-papers
+python3.9 make_results.py --graph_name ogbn-papers
