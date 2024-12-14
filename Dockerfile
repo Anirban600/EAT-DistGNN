@@ -36,7 +36,9 @@ RUN pip install \
     scikit-learn \
     matplotlib \
     ogb \
-    "numpy<2"
+    "numpy<2" \
+    pymetis
+
 
 # Set the environment variable for DGL
 ENV DGLBACKEND=pytorch

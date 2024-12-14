@@ -13,6 +13,7 @@ from ogb.nodeproppred import DglNodePropPredDataset
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from dgl.data import FlickrDataset,RedditDataset,YelpDataset
+from visualize_partitions import visualize_partitions
 
 
 if __name__ == "__main__":
@@ -125,4 +126,5 @@ if __name__ == "__main__":
     )
     #print("........................................................")
     #print("Total Time : ", time.time()-start)
+    visualize_partitions(f"{args.output}/{args.dataset}.json", args.num_parts)
 

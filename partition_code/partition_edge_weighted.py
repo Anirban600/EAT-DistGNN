@@ -20,6 +20,7 @@ import sys
 from collections import Counter
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from dgl.data import FlickrDataset,RedditDataset,YelpDataset
+from visualize_partitions import visualize_partitions
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser("Partition builtin graphs")
@@ -194,3 +195,4 @@ if __name__ == "__main__":
             )
     #print("Total Time : ", time.time()-runstart)
     #print("......................................................................................")
+    visualize_partitions(f"{args.output}/{args.dataset}.json", args.num_parts)
