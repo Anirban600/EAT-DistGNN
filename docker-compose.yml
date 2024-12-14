@@ -2,7 +2,7 @@ services:
   container1:
     build: .
     container_name: container1
-    shm_size: "256m"
+    shm_size: "128m"
     networks:
       mynet:
         ipv4_address: 192.168.1.2
@@ -13,7 +13,7 @@ services:
 
   container2:
     build: .
-    shm_size: "256m"
+    shm_size: "128m"
     container_name: container2
     networks:
       mynet:
@@ -26,7 +26,7 @@ services:
   container3:
     build: .
     container_name: container3
-    shm_size: "256m"
+    shm_size: "128m"
     networks:
       mynet:
         ipv4_address: 192.168.1.4
@@ -38,7 +38,7 @@ services:
   container4:
     build: .
     container_name: container4
-    shm_size: "256m"
+    shm_size: "128m"
     networks:
       mynet:
         ipv4_address: 192.168.1.5
