@@ -41,7 +41,9 @@ We have used five datasets from different domains. The details about them are as
 
 ## Setup Environment
 
-Refer to [this doc](https://github.com/Anirban600/EAT-DistGNN/blob/a1760f4b1450d532aa93f9b035539c46bee5232f/Env_setup.pdf)
+Refer to [this doc](https://github.com/Anirban600/EAT-DistGNN/blob/a1760f4b1450d532aa93f9b035539c46bee5232f/Env_setup.pdf).
+
+If you don't have access to a distributed environment and still want to try out our code and run it small graph like Flickr then follow the instructions given on our [tutorial page](https://github.com/gagan-iitb/DIST_GNN).
 
 ## Make Partitions
 
